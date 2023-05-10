@@ -1,4 +1,6 @@
-import { Formik } from 'formik';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import {
   Searchbar,
@@ -8,31 +10,49 @@ import {
   SearchFormErrorMessage,
 } from './Searchbar.styled';
 
+const validationSchema = Yup.object().shape({
+  imageSearch: Yup.string().trim().required('Search field cannot be empty'),
+});
+
 const SearchBar = ({ onSubmit }) => {
-  const validationSchema = Yup.object().shape({
-    imageSearch: Yup.string().trim().required('Search field cannot be empty'),
+  const [searchValue, setSearchValue] = useState('');
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
   });
+
+  const onSubmitForm = (data, e) => {
+    onSubmit(data.imageSearch);
+    reset();
+  };
+
+  const handleSearchInputChange = event => {
+    setSearchValue(event.target.value);
+  };
 
   return (
     <Searchbar>
-      <Formik
-        initialValues={{ imageSearch: '' }}
-        validationSchema={validationSchema}
-        onSubmit={(values, { resetForm }) => {
-          onSubmit(values.imageSearch.trim());
-          resetForm();
-        }}
-      >
-        {({ dirty }) => (
-          <SearchForm>
-            <SearchFormErrorMessage name="imageSearch" component="div" />
-            <SearchFormInput name="imageSearch" type="text" />
-            <SearchFormButton type="submit" disabled={!dirty}>
-              Search
-            </SearchFormButton>
-          </SearchForm>
+      <SearchForm onSubmit={handleSubmit(onSubmitForm)}>
+        {errors.imageSearch && (
+          <SearchFormErrorMessage>
+            {errors.imageSearch?.message}
+          </SearchFormErrorMessage>
         )}
-      </Formik>
+        <SearchFormInput
+          name="imageSearch"
+          type="text"
+          {...register('imageSearch')}
+          onChange={handleSearchInputChange}
+        />
+        <SearchFormButton type="submit" disabled={!searchValue}>
+          Search
+        </SearchFormButton>
+      </SearchForm>
     </Searchbar>
   );
 };

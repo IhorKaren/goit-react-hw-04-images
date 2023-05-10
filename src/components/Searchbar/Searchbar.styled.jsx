@@ -1,5 +1,4 @@
 import styled, { keyframes } from 'styled-components';
-import { Form, Field, ErrorMessage } from 'formik';
 
 const slideInFromBottom = keyframes`
   0% {
@@ -29,7 +28,7 @@ const Searchbar = styled.header`
 /*
  * Стили компонента SearchForm
  */
-const SearchForm = styled(Form)`
+const SearchForm = styled.form`
   display: flex;
   align-items: center;
   max-width: 600px;
@@ -55,11 +54,12 @@ const SearchFormButton = styled.button`
   }
 
   &:disabled {
+    cursor: not-allowed;
     background-color: #878787;
   }
 `;
 
-const SearchFormInput = styled(Field)`
+const SearchFormInput = styled.input`
   display: inline-block;
   width: 100%;
   height: 44px;
@@ -71,7 +71,7 @@ const SearchFormInput = styled(Field)`
   
 `;
 
-const SearchFormErrorMessage = styled(ErrorMessage)`
+const SearchFormErrorMessage = styled.div`
   position: absolute;
   color: black;
   font-weight: 500;

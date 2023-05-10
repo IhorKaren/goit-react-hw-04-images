@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { Container } from './Container/Container.styled';
 import fetchImages from '../services/pixabayAPI';
 import SearchBar from './Searchbar';
@@ -6,80 +6,62 @@ import ImageGallery from './ImageGallery';
 import Button from './Button';
 import Loader from './Loader';
 
-export class App extends Component {
-  state = {
-    images: [],
-    value: '',
-    page: 1,
-    loading: false,
-  };
+export function App() {
+  const [images, setImages] = useState([]);
+  const [value, setValue] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
 
-  componentDidUpdate(prevProps, prevState) {
-    const { images } = this.state;
+  useEffect(() => {
+    const galleryList = document.querySelector('ul');
+    const lastImage = galleryList.lastElementChild;
 
-    if (prevState.images !== images && images.length > 12) {
-      const { height: cardHeight } = document
-        .querySelector('ul')
-        .firstElementChild.getBoundingClientRect();
+    if (images.length > 12) {
+      const { height: cardHeight } = lastImage.getBoundingClientRect();
 
       window.scrollBy({
         top: cardHeight * 4,
         behavior: 'smooth',
       });
     }
-  }
+  }, [images]);
 
-  getImages = async value => {
+  async function getImages(searchValue) {
     try {
-      const { page } = this.state;
+      setLoading(true);
 
-      this.setState({ loading: true });
-
-      if (value !== this.state.value) {
-        const responseImages = await fetchImages(value, 1);
-        return this.setState({
-          images: responseImages,
-          page: 1,
-          value: value,
-        });
+      if (searchValue !== value) {
+        const responseImages = await fetchImages(searchValue, 1);
+        setImages([...responseImages]);
+        setValue(searchValue);
+        setPage(1);
       }
 
-      if (value === this.state.value) {
-        const responseImages = await fetchImages(value, page);
-        return this.setState(prevState => ({
-          page: prevState.page + 1,
-          images: [...prevState.images, ...responseImages],
-          value: value,
-        }));
+      if (searchValue === value) {
+        const responseImages = await fetchImages(searchValue, page + 1);
+        setPage(prevPage => prevPage + 1);
+        setImages([...images, ...responseImages]);
+
+        return;
       }
     } catch (error) {
     } finally {
-      this.setState({ loading: false });
+      setLoading(false);
     }
-  };
-
-  handleLoadMoreClick = () => {
-    const { value, page } = this.state;
-
-    this.setState(
-      prevState => ({ page: prevState.page + 1 }),
-      () => this.getImages(value, page)
-    );
-  };
-
-  render() {
-    const { images } = this.state;
-    const showLoadMoreButton = images.length < 12 || images.length === 0;
-
-    return (
-      <Container>
-        {this.state.loading && <Loader />}
-        <SearchBar onSubmit={this.getImages} />
-        <ImageGallery images={images} />
-        {showLoadMoreButton ? null : (
-          <Button buttonClick={this.handleLoadMoreClick} />
-        )}
-      </Container>
-    );
   }
+
+  function handleLoadMoreClick() {
+    getImages(value);
+  }
+
+  const showLoadMoreButton = images.length < 12 || images.length === 0;
+
+  return (
+    <Container>
+      {loading && <Loader />}
+      <SearchBar onSubmit={getImages} />
+      <ImageGallery images={images} />
+      {showLoadMoreButton ? null : <Button buttonClick={handleLoadMoreClick} />}
+    </Container>
+  );
 }

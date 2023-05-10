@@ -1,36 +1,30 @@
-import React, { Component } from 'react';
+import { useState } from 'react';
 import PageModal from 'components/Modal';
-import {GalleryItem, ImageGalleryItemImage} from './ImageGalleryItem.styled'
+import { GalleryItem, ImageGalleryItemImage } from './ImageGalleryItem.styled';
 
-class ImageGalleryItem extends Component {
-  state = {
-    isModalOpen: false,
+function ImageGalleryItem({ webformatURL, tags, largeImageURL }) {
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => {
+    setModalOpen(true);
   };
 
-  openModal = () => {
-    this.setState({ isModalOpen: true });
+  const closeModal = () => {
+    setModalOpen(false);
   };
 
-  closeModal = () => {
-    this.setState({ isModalOpen: false });
-  };
-
-  render() {
-    const { webformatURL, tags, largeImageURL } = this.props;
-    const { isModalOpen } = this.state;
-    return (
-      <>
-        <GalleryItem onClick={this.openModal}>
-          <ImageGalleryItemImage src={webformatURL} alt={tags} />
-        </GalleryItem>
-        {isModalOpen && (
-          <PageModal closeModal={this.closeModal}>
-            <img src={largeImageURL} alt={tags} />
-          </PageModal>
-        )}
-      </>
-    );
-  }
+  return (
+    <>
+      <GalleryItem onClick={openModal}>
+        <ImageGalleryItemImage src={webformatURL} alt={tags} />
+      </GalleryItem>
+      {isModalOpen && (
+        <PageModal closeModal={closeModal}>
+          <img src={largeImageURL} alt={tags} />
+        </PageModal>
+      )}
+    </>
+  );
 }
 
 export default ImageGalleryItem;
