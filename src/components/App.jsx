@@ -6,7 +6,7 @@ import ImageGallery from './ImageGallery';
 import Button from './Button';
 import Loader from './Loader';
 
-export function App() {
+export default function App() {
   const [images, setImages] = useState([]);
   const [value, setValue] = useState('');
   const [loading, setLoading] = useState(false);

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import PageModal from 'components/Modal';
 import { GalleryItem, ImageGalleryItemImage } from './ImageGalleryItem.styled';
 
-function ImageGalleryItem({ webformatURL, tags, largeImageURL }) {
+export default function ImageGalleryItem({ webformatURL, tags, largeImageURL }) {
   const [isModalOpen, setModalOpen] = useState(false);
 
   const openModal = () => {
@@ -26,5 +26,3 @@ function ImageGalleryItem({ webformatURL, tags, largeImageURL }) {
     </>
   );
 }
-
-export default ImageGalleryItem;

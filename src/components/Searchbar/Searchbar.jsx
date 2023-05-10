@@ -14,7 +14,7 @@ const validationSchema = Yup.object().shape({
   imageSearch: Yup.string().trim().required('Search field cannot be empty'),
 });
 
-const SearchBar = ({ onSubmit }) => {
+export default function SearchBar({ onSubmit }) {
   const [searchValue, setSearchValue] = useState('');
 
   const {
@@ -55,6 +55,4 @@ const SearchBar = ({ onSubmit }) => {
       </SearchForm>
     </Searchbar>
   );
-};
-
-export default SearchBar;
+}

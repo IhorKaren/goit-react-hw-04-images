@@ -1,7 +1,7 @@
 import ImageGalleryItem from '../ImageGalleryItem';
 import { ImageGalleryList } from './ImageGallery.styled';
 
-const ImageGallery = ({ images }) => {
+export default function ImageGallery({ images }) {
   return (
     <ImageGalleryList>
       {images.map(({ id, webformatURL, largeImageURL, tags }) => (
@@ -14,6 +14,4 @@ const ImageGallery = ({ images }) => {
       ))}
     </ImageGalleryList>
   );
-};
-
-export default ImageGallery;
+}
