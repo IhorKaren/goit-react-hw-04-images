@@ -17,7 +17,7 @@ export default function PageModal({ closeModal, children }) {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [closeModal]);
 
   const handleBackdropClick = e => {
     if (e.currentTarget === e.target) {
