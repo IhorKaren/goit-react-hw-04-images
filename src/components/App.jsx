@@ -39,9 +39,7 @@ export default function App() {
 
       if (searchValue === value) {
         const responseImages = await fetchImages(searchValue, page + 1);
-        setPage(prevPage => prevPage + 1);
         setImages([...images, ...responseImages]);
-
         return;
       }
     } catch (error) {
@@ -51,6 +49,7 @@ export default function App() {
   }
 
   function handleLoadMoreClick() {
+    setPage(prevPage => prevPage + 1);
     getImages(value);
   }
 
