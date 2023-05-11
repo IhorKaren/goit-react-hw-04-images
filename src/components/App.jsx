@@ -42,6 +42,7 @@ export default function App() {
     async function getImages() {
       try {
         setLoading(true);
+        setLoadMore(true);
 
         if (value !== query) {
           const responseImages = await fetchImages(query, 1);
