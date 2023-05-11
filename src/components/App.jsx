@@ -12,6 +12,7 @@ export default function App() {
   const [images, setImages] = useState([]);
   const [value, setValue] = useState('');
   const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [loadmore, setLoadMore] = useState(true);
 
@@ -33,45 +34,55 @@ export default function App() {
     }
   }, [images]);
 
-  async function getImages(searchValue) {
-    try {
-      setLoading(true);
-
-      if (searchValue !== value) {
-        const responseImages = await fetchImages(searchValue, 1);
-
-        if (responseImages.length === 0) {
-          setImages([]);
-          return toast(`Oops, no results were found for your search.`);
-        }
-
-        setLoadMore(true);
-        setImages([...responseImages]);
-        setValue(searchValue);
-        setPage(1);
-        return;
-      }
-
-      if (searchValue === value) {
-        const responseImages = await fetchImages(searchValue, page + 1);
-
-        if (responseImages.length < 12) {
-          setLoadMore(false);
-        }
-
-        return setImages([...images, ...responseImages]);
-      }
-    } catch (error) {
-      setLoadMore(false);
-      toast(`All images found for your request!`);
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (query === '') {
+      return;
     }
+
+    async function getImages() {
+      try {
+        setLoading(true);
+
+        if (value !== query) {
+          const responseImages = await fetchImages(query, 1);
+
+          if (responseImages.length === 0) {
+            setImages([]);
+            return toast(`Oops, no results were found for your search.`);
+          }
+
+          setValue(query);
+          setImages([...responseImages]);
+          setPage(1);
+          return;
+        }
+
+        if (page > 1) {
+          const responseImages = await fetchImages(query, page);
+
+          if (responseImages.length < 12) {
+            setLoadMore(false);
+          }
+
+          return setImages(s => [...s, ...responseImages]);
+        }
+      } catch {
+        setLoadMore(false);
+        toast(`All images found for your request!`);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    getImages();
+  }, [page, query, value]);
+
+  function searchQuery(searchValue) {
+    setQuery(searchValue);
   }
 
   function handleLoadMoreClick() {
     setPage(prevPage => prevPage + 1);
-    getImages(value);
   }
 
   const showLoadMoreButton = images.length < 12 || !loadmore;
@@ -79,7 +90,7 @@ export default function App() {
   return (
     <Container>
       {loading && <Loader />}
-      <SearchBar onSubmit={getImages} />
+      <SearchBar onSubmit={searchQuery} />
       <ImageGallery images={images} />
       {showLoadMoreButton ? null : <Button buttonClick={handleLoadMoreClick} />}
       <ToastContainer autoClose={1500} />
