@@ -11,9 +11,9 @@ import Loader from './Loader';
 export default function App() {
   const [images, setImages] = useState([]);
   const [value, setValue] = useState('');
-  const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [loadmore, setLoadMore] = useState(true);
 
   useEffect(() => {
