@@ -21,7 +21,7 @@ const Searchbar = styled.header`
   align-items: center;
   padding: 0 20px;
   z-index: 1000;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), rgba(201, 201, 201, 0.8));
+  background: linear-gradient(to right, rgba(60, 60, 60, 0.8), rgba(141, 92, 46, 0.8), rgba(91, 125, 53, 0.8));
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
